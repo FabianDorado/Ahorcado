@@ -1,0 +1,29 @@
+<?php
+
+return [
+    'PERRO',
+    'GATO',
+    'CONEJO',
+    'ELEFANTE',
+    'TIGRE',
+    'LEON',
+    'ZEBRA',
+    'JIRAFA',
+    'CANGURO',
+    'PANDA',
+    'SERPIENTE',
+    'TORTUGA',
+    'AGUILA',
+    'CABALLO',
+    'LORO',
+    'RINOCERONTE',
+    'HIPOPOTAMO',
+    'CROCODILO',
+    'OSO',
+    'MONO',
+    'ZORRO',
+    'CIERVO',
+    'KOALA',
+    'PUMA',
+];
+?>
