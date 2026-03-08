@@ -1,24 +1,27 @@
-<div class="resultado victoria">
-    <h1>¡VICTORIA!</h1>
+<!-- vistas/victoria.php -->
+<div class="resultado-container victoria">
+    <h1>¡FELICIDADES!</h1>
+    <h2>Has ganado</h2>
     
-    <div class="palabra-secreta">
-        <?php echo $juego->getPalabraSecreta(); ?>
+    <div class="palabra-descubierta">
+        La palabra era: <strong><?php echo $juego->getPalabraSecreta(); ?></strong>
     </div>
     
-    <p class="mensaje-exito">¡Felicidades! Has adivinado la palabra</p>
+    <?php if (isset($_SESSION['tema_actual'])): ?>
+        <div class="tematica-info">
+            Temática: <?php echo getNombreTematica($_SESSION['tema_actual']); ?>
+        </div>
+    <?php endif; ?>
     
-    <pre class="dibujo">
-  +---+
-  |   |
-  O   |
- /|\  |
- / \  |
-      |
-    ===
-    </pre>
-    
-    <form method="POST">
-        <input type="hidden" name="reiniciar" value="1">
-        <button type="submit" class="boton">Jugar de nuevo</button>
-    </form>
+    <div class="botones-accion">
+        <form method="POST" style="display: inline;">
+            <input type="hidden" name="reiniciar" value="1">
+            <button type="submit" class="btn-reiniciar">Jugar otra vez</button>
+        </form>
+        
+        <form method="POST" style="display: inline;">
+            <input type="hidden" name="cambiar_tema" value="1">
+            <button type="submit" class="btn-cambiar-tema">Cambiar temática</button>
+        </form>
+    </div>
 </div>

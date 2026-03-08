@@ -17,26 +17,40 @@ class JuegoAhorcado {
             $this->palabraSecreta = strtoupper($palabra);
         } else {
             $palabras = require __DIR__ . '/../config/palabras.php';
-            $this->palabraSecreta = strtoupper($palabras[array_rand($palabras)]);
+            // Por defecto toma animales si no se especifica
+            $this->palabraSecreta = strtoupper($palabras['animales'][array_rand($palabras['animales'])]);
         }
     }
     
     public function procesarLetra($letra) {
         // Validar que el juego no haya terminado
         if ($this->estado !== 'jugando') {
-            return ['tipo' => 'error', 'mensaje' => 'El juego ya terminó'];
+            $resultado = ['tipo' => 'error', 'mensaje' => 'El juego ya terminó'];
+            // Guardar mensaje en sesión para mostrarlo después de la redirección
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                $_SESSION['mensaje_flash'] = $resultado;
+            }
+            return $resultado;
         }
         
         $letra = strtoupper(trim($letra));
         
         // Validar que sea una letra válida
         if (!ctype_alpha($letra) || strlen($letra) !== 1) {
-            return ['tipo' => 'error', 'mensaje' => 'Ingresa una sola letra válida'];
+            $resultado = ['tipo' => 'error', 'mensaje' => 'Ingresa una sola letra válida'];
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                $_SESSION['mensaje_flash'] = $resultado;
+            }
+            return $resultado;
         }
         
         // Verificar si ya fue usada
         if (in_array($letra, $this->letrasAdivinadas) || in_array($letra, $this->letrasIncorrectas)) {
-            return ['tipo' => 'error', 'mensaje' => 'Ya usaste esa letra'];
+            $resultado = ['tipo' => 'error', 'mensaje' => 'Ya usaste esa letra'];
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                $_SESSION['mensaje_flash'] = $resultado;
+            }
+            return $resultado;
         }
         
         // Procesar la letra
@@ -57,6 +71,11 @@ class JuegoAhorcado {
         elseif ($this->verificarDerrota()) {
             $this->estado = 'perdido';
             $resultado = ['tipo' => 'derrota', 'mensaje' => 'Lo siento - Has perdido'];
+        }
+        
+        // Guardar mensaje en sesión para mostrarlo después de la redirección
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['mensaje_flash'] = $resultado;
         }
         
         return $resultado;
@@ -120,6 +139,7 @@ class JuegoAhorcado {
             'palabraSecreta' => $this->palabraSecreta,
             'letrasAdivinadas' => $this->letrasAdivinadas,
             'letrasIncorrectas' => $this->letrasIncorrectas,
+            'intentosMaximos' => $this->intentosMaximos,
             'estado' => $this->estado
         ];
     }
@@ -128,6 +148,7 @@ class JuegoAhorcado {
         $juego = new self($data['palabraSecreta']);
         $juego->letrasAdivinadas = $data['letrasAdivinadas'];
         $juego->letrasIncorrectas = $data['letrasIncorrectas'];
+        $juego->intentosMaximos = $data['intentosMaximos'] ?? 6;
         $juego->estado = $data['estado'];
         return $juego;
     }
